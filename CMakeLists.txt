@@ -1,18 +1,14 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1.3)
 project(SVMBlendLibrary)
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}" /Ox")
+include_directories(include)
 
-include_directories(include ${CMAKE_CURRENT_BINARY_DIR})
-
-add_subdirectory(zlib)
+find_package(ZLIB REQUIRED)
 add_library(tools STATIC cieLab.cpp rgb.cpp modelReader.cpp cieLCh.cpp
                          modelContainer.cpp svm.cpp modelDecoder.cpp)
+set_property(TARGET tools PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_library(svmBlend SHARED svmBlend.cpp)
-target_link_libraries(svmBlend tools zlib)
+target_link_libraries(svmBlend tools ZLIB::ZLIB)
 
 add_executable(blendTest main.cpp)
 target_link_libraries(blendTest svmBlend)
-
-add_executable(zlibTest zlibTest.cpp)
-target_link_libraries(zlibTest zlib)
